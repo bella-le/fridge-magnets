@@ -1,30 +1,31 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+
+interface Word {
+  id: number;
+  text: string;
+  x: number;
+  y: number;
+}
 
 const FridgeMagnets = () => {
-  // Base canvas size
-  const CANVAS_WIDTH = 1280;
-  const CANVAS_HEIGHT = 800;
+  const CANVAS_WIDTH = 1600;
+  const CANVAS_HEIGHT = 1000;
 
-  const initialWords = [
-    'love', 'dream', 'whisper', 'dance', 'moon', 'star',
-    'gentle', 'wild', 'soul', 'heart', 'smile', 'laugh',
-    'flutter', 'shine', 'glow', 'drift', 'float', 'sing',
-    'the', 'and', 'in', 'of', 'with', 'through', 'beneath',
-    'my', 'your', 'our', 'their', 'soft', 'bright', 'dark'
-  ].map((word, index) => ({
-    id: index,
-    text: word,
-    x: 20 + (index % 8) * 100,
-    y: 20 + Math.floor(index / 8) * 40
-  }));
-
-  const [words, setWords] = useState(initialWords);
+  const [words, setWords] = useState<Word[]>([]);
   const [dragging, setDragging] = useState(false);
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(0);
+
   const boardRef = useRef(null);
-  const dragInfo = useRef({
+  const wsRef = useRef<WebSocket | null>(null);
+  const dragInfo = useRef<{
+    wordId: number | null;
+    startX: number;
+    startY: number;
+    offsetX: number;
+    offsetY: number;
+  }>({
     wordId: null,
     startX: 0,
     startY: 0,
@@ -32,17 +33,55 @@ const FridgeMagnets = () => {
     offsetY: 0
   });
 
+  // WebSocket connection
   useEffect(() => {
+    const wsUrl = `ws://${window.location.hostname}:3000/ws`;
+    console.log('Connecting to WebSocket:', wsUrl);
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log('Received message:', data);
+      switch (data.type) {
+        case 'init':
+          console.log('Setting initial words:', data.words);
+          setWords(data.words);
+          break;
+        case 'wordMoved':
+          console.log('Updating word position:', data.wordId, data.x, data.y);
+          setWords(prevWords => 
+            prevWords.map(word => 
+              word.id === data.wordId 
+                ? { ...word, x: data.x, y: data.y }
+                : word
+            )
+          );
+          break;
+      }
+    };
+
+    ws.onclose = () => {
+      console.log('Disconnected from server');
+    };
+
+    wsRef.current = ws;
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+  useLayoutEffect(() => {
     const updateScale = () => {
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-      
-      // Calculate scale based on both dimensions
       const scaleX = windowWidth / CANVAS_WIDTH;
       const scaleY = windowHeight / CANVAS_HEIGHT;
-      const newScale = Math.min(scaleX, scaleY);
-      
-      setScale(newScale);
+      setScale(Math.min(scaleX, scaleY));
     };
 
     updateScale();
@@ -67,20 +106,30 @@ const FridgeMagnets = () => {
     
     const boardRect = boardRef.current.getBoundingClientRect();
     
-    // Calculate new position relative to the board
     let newX = (e.clientX - boardRect.left) / scale - dragInfo.current.offsetX;
     let newY = (e.clientY - boardRect.top) / scale - dragInfo.current.offsetY;
     
-    // Constrain to board boundaries
     newX = Math.max(0, Math.min(CANVAS_WIDTH - 100, newX));
     newY = Math.max(0, Math.min(CANVAS_HEIGHT - 40, newY));
 
-    setWords(words.map(word => {
-      if (word.id === dragInfo.current.wordId) {
-        return { ...word, x: newX, y: newY };
-      }
-      return word;
-    }));
+    // Update local state immediately
+    setWords(prevWords => 
+      prevWords.map(word => 
+        word.id === dragInfo.current.wordId 
+          ? { ...word, x: newX, y: newY }
+          : word
+      )
+    );
+
+    // Send position update to server if connected
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'moveWord',
+        wordId: dragInfo.current.wordId,
+        x: newX,
+        y: newY
+      }));
+    }
   };
 
   const handleMouseUp = () => {
@@ -98,6 +147,7 @@ const FridgeMagnets = () => {
           width: `${CANVAS_WIDTH}px`,
           height: `${CANVAS_HEIGHT}px`,
           transform: `scale(${scale})`,
+          visibility: scale === 0 ? 'hidden' : 'visible',
         }}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
