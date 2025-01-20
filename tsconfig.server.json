@@ -7,7 +7,9 @@
       "isolatedModules": false,
       "noEmit": false,
       "esModuleInterop": true,
-      "moduleResolution": "node"
+      "moduleResolution": "node",
+      "sourceMap": true,
+      "rootDir": "src"
     },
     "include": ["src/server/**/*.ts"]
 }

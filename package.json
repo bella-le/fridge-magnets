@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "ts-node --project tsconfig.server.json src/server/server.ts",
     "build": "next build && tsc --project tsconfig.server.json",
-    "start": "NODE_ENV=production node --experimental-modules dist/server/server.js"
+    "postbuild": "cp -r src/server dist/ && tsc --project tsconfig.server.json",
+    "start": "NODE_ENV=production node dist/server/server.js"
   },
   "dependencies": {
     "@types/ws": "^8.5.13",
