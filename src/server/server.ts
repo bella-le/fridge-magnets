@@ -18,10 +18,10 @@ const initialWords = [
 'why', 'how', 'when', 'where', 'who',
 'i', 'you', 'we', 'us', 'they', 'them', 'it', 'me', 'myself', 'yours', 'she', 'he', 's', '\'s'
 ].map((text, id) => ({
-    id,
-    text,
-  x: 20 + (id % 12) * 100,
-  y: 20 + Math.floor(id / 12) * 40
+  id,
+  text,
+  x: 20 + (id % 8) * 100,
+  y: 20 + Math.floor(id / 8) * 40
 }));
 
 const boardState = new BoardState(initialWords);
