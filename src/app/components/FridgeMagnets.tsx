@@ -7,6 +7,14 @@ interface Word {
   text: string;
   x: number;
   y: number;
+  rotation?: number;
+}
+
+interface Client {
+  id: string;
+  color: string;
+  cursorX: number;
+  cursorY: number;
 }
 
 const FridgeMagnets = () => {
@@ -14,18 +22,13 @@ const FridgeMagnets = () => {
   const CANVAS_HEIGHT = 1000;
 
   const [words, setWords] = useState<Word[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [dragging, setDragging] = useState(false);
   const [scale, setScale] = useState(0);
 
-  const boardRef = useRef(null);
+  const boardRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  const dragInfo = useRef<{
-    wordId: number | null;
-    startX: number;
-    startY: number;
-    offsetX: number;
-    offsetY: number;
-  }>({
+  const dragInfo = useRef({
     wordId: null,
     startX: 0,
     startY: 0,
@@ -33,26 +36,25 @@ const FridgeMagnets = () => {
     offsetY: 0
   });
 
-  // WebSocket connection
+  // Cursor update throttling
+  const lastCursorUpdate = useRef<number>(0);
+  const CURSOR_UPDATE_INTERVAL = 50; // ms
+
   useEffect(() => {
     const wsUrl = `ws://${window.location.hostname}:3000/ws`;
-    console.log('Connecting to WebSocket:', wsUrl);
     const ws = new WebSocket(wsUrl);
-
-    ws.onopen = () => {
-      console.log('Connected to WebSocket server');
-    };
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log('Received message:', data);
       switch (data.type) {
         case 'init':
-          console.log('Setting initial words:', data.words);
-          setWords(data.words);
+          setWords(data.words.map((word: Word) => ({
+            ...word,
+            rotation: Math.random() * 15 - 7
+          })));
+          setClients(data.clients);
           break;
         case 'wordMoved':
-          console.log('Updating word position:', data.wordId, data.x, data.y);
           setWords(prevWords => 
             prevWords.map(word => 
               word.id === data.wordId 
@@ -61,11 +63,19 @@ const FridgeMagnets = () => {
             )
           );
           break;
+        case 'clients':
+          setClients(data.clients);
+          break;
+        case 'cursorMoved':
+          setClients(prevClients => 
+            prevClients.map(client => 
+              client.id === data.clientId
+                ? { ...client, cursorX: data.x, cursorY: data.y }
+                : client
+            )
+          );
+          break;
       }
-    };
-
-    ws.onclose = () => {
-      console.log('Disconnected from server');
     };
 
     wsRef.current = ws;
@@ -89,8 +99,26 @@ const FridgeMagnets = () => {
     return () => window.removeEventListener('resize', updateScale);
   }, []);
 
-  const handleMouseDown = (e, word) => {
-    const rect = e.target.getBoundingClientRect();
+  const sendCursorPosition = (e: React.MouseEvent) => {
+    if (!wsRef.current || !boardRef.current) return;
+    
+    const now = Date.now();
+    if (now - lastCursorUpdate.current < CURSOR_UPDATE_INTERVAL) return;
+    lastCursorUpdate.current = now;
+
+    const boardRect = boardRef.current.getBoundingClientRect();
+    const x = (e.clientX - boardRect.left) / scale;
+    const y = (e.clientY - boardRect.top) / scale;
+
+    wsRef.current.send(JSON.stringify({
+      type: 'cursor',
+      x,
+      y
+    }));
+  };
+
+  const handleMouseDown = (e: React.MouseEvent, word: Word) => {
+    const rect = e.currentTarget.getBoundingClientRect();
     dragInfo.current = {
       wordId: word.id,
       startX: e.clientX,
@@ -101,10 +129,13 @@ const FridgeMagnets = () => {
     setDragging(true);
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: React.MouseEvent) => {
+    sendCursorPosition(e);
+    
     if (!dragging) return;
     
-    const boardRect = boardRef.current.getBoundingClientRect();
+    const boardRect = boardRef.current?.getBoundingClientRect();
+    if (!boardRect) return;
     
     let newX = (e.clientX - boardRect.left) / scale - dragInfo.current.offsetX;
     let newY = (e.clientY - boardRect.top) / scale - dragInfo.current.offsetY;
@@ -153,6 +184,27 @@ const FridgeMagnets = () => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
+        {/* Cursors */}
+        {clients.map(client => (
+          <div
+            key={client.id}
+            className="absolute pointer-events-none"
+            style={{
+              left: `${client.cursorX}px`,
+              top: `${client.cursorY}px`,
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <path
+                d="M0 0L16 6L6 16L0 0Z"
+                fill={client.color}
+              />
+            </svg>
+          </div>
+        ))}
+
+        {/* Words */}
         {words.map(word => (
           <div
             key={word.id}
@@ -163,7 +215,9 @@ const FridgeMagnets = () => {
               top: `${word.y}px`,
               fontFamily: 'serif',
               touchAction: 'none',
-              userSelect: 'none'
+              userSelect: 'none',
+              transform: `rotate(${word.rotation || 0}deg)`,
+              transformOrigin: 'center center'
             }}
           >
             {word.text}

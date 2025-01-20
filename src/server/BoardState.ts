@@ -10,6 +10,9 @@ interface Word {
 interface Client {
   id: string;
   ws: WebSocket;
+  color: string;
+  cursorX: number;
+  cursorY: number;
 }
 
 export class BoardState {
@@ -21,15 +24,37 @@ export class BoardState {
     this.clients = new Map();
   }
 
+  private getRandomColor(): string {
+    const colors = [
+      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD',
+      '#D4A5A5', '#9B59B6', '#3498DB', '#E67E22', '#2ECC71'
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
   addClient(clientId: string, ws: WebSocket) {
-    this.clients.set(clientId, { id: clientId, ws });
-    this.broadcastClients();
+    this.clients.set(clientId, { 
+      id: clientId, 
+      ws,
+      color: this.getRandomColor(),
+      cursorX: 0,
+      cursorY: 0
+    });
+    
     // Send initial state to new client
     this.sendToClient(clientId, {
       type: 'init',
       words: this.words,
-      clients: Array.from(this.clients.keys())
+      clients: Array.from(this.clients.entries()).map(([id, client]) => ({
+        id: client.id,
+        color: client.color,
+        cursorX: client.cursorX,
+        cursorY: client.cursorY
+      }))
     });
+
+    // Broadcast new client to others
+    this.broadcastClients();
   }
 
   removeClient(clientId: string) {
@@ -37,13 +62,26 @@ export class BoardState {
     this.broadcastClients();
   }
 
+  updateCursor(clientId: string, x: number, y: number) {
+    const client = this.clients.get(clientId);
+    if (client) {
+      client.cursorX = x;
+      client.cursorY = y;
+      this.broadcast({
+        type: 'cursorMoved',
+        clientId,
+        x,
+        y,
+        color: client.color
+      });
+    }
+  }
+
   updateWordPosition(wordId: number, x: number, y: number, clientId: string) {
-    console.log('Updating word position:', { wordId, x, y, clientId });
     const word = this.words.find(w => w.id === wordId);
     if (word) {
       word.x = x;
       word.y = y;
-      console.log('Word updated:', word);
       this.broadcast({
         type: 'wordMoved',
         wordId,
@@ -51,24 +89,14 @@ export class BoardState {
         y,
         movedBy: clientId
       });
-    } else {
-      console.log('Word not found:', wordId);
     }
   }
 
   private broadcast(message: any) {
     const messageStr = JSON.stringify(message);
-    console.log('Broadcasting message:', message);
     this.clients.forEach(client => {
       if (client.ws.readyState === WebSocket.OPEN) {
-        try {
-          client.ws.send(messageStr);
-          console.log('Sent to client:', client.id);
-        } catch (error) {
-          console.error('Error sending to client:', client.id, error);
-        }
-      } else {
-        console.log('Client not ready:', client.id, 'state:', client.ws.readyState);
+        client.ws.send(messageStr);
       }
     });
   }
@@ -83,7 +111,12 @@ export class BoardState {
   private broadcastClients() {
     this.broadcast({
       type: 'clients',
-      clients: Array.from(this.clients.keys())
+      clients: Array.from(this.clients.entries()).map(([id, client]) => ({
+        id: client.id,
+        color: client.color,
+        cursorX: client.cursorX,
+        cursorY: client.cursorY
+      }))
     });
   }
 }

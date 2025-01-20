@@ -10,11 +10,13 @@ const handle = app.getRequestHandler();
 
 // Initial words defined only once, in the backend
 const initialWords = [
-  'love', 'dream', 'whisper', 'dance', 'moon', 'star',
-  'gentle', 'wild', 'soul', 'heart', 'smile', 'laugh',
-  'flutter', 'shine', 'glow', 'drift', 'float', 'sing',
-  'the', 'and', 'in', 'of', 'with', 'through', 'beneath',
-  'my', 'your', 'our', 'their', 'soft', 'bright', 'dark'
+'love', 'happy', 'sad', 'joy', 'smile', 'laugh', 'hope', 'dream', 'fear', 'wonder',
+'jump', 'dance', 'eat', 'cook', 'sing', 'run', 'play', 'read', 'write', 'think',
+'sun', 'moon', 'star', 'sky', 'ocean', 'flower', 'tree', 'river', 'snow', 'breeze',
+'magic', 'sparkle', 'unicorn', 'rainbow', 'butterfly', 'wish', 'mystery', 'adventure', 'glitter', 'wander',
+'and', 'or', 'but', 'if', 'why', 'because', 'not', 'for', 'of', 'with', 'under', 'above', 'beside', 'below',
+'why', 'how', 'when', 'where', 'who',
+'i', 'you', 'we', 'us', 'they', 'them', 'it', 'me', 'myself', 'yours', 'she', 'he', 's', '\'s'
 ].map((text, id) => ({
   id,
   text,
@@ -32,7 +34,6 @@ app.prepare().then(() => {
     path: '/ws'
   });
 
-  // Log when the WebSocket server is created
   console.log('WebSocket server created on path: /ws');
 
   wss.on('connection', (ws: WebSocket) => {
@@ -44,15 +45,21 @@ app.prepare().then(() => {
     ws.on('message', (message: WebSocket.RawData) => {
       try {
         const data = JSON.parse(message.toString());
-        console.log('Received message from client:', data);
+        
         switch (data.type) {
           case 'moveWord':
-            console.log('Moving word:', data.wordId, data.x, data.y);
             boardState.updateWordPosition(
               data.wordId,
               data.x,
               data.y,
               clientId
+            );
+            break;
+          case 'cursor':
+            boardState.updateCursor(
+              clientId,
+              data.x,
+              data.y
             );
             break;
           default:
@@ -64,7 +71,6 @@ app.prepare().then(() => {
     });
 
     ws.on('close', () => {
-      console.log(`Client disconnected: ${clientId}`);
       boardState.removeClient(clientId);
     });
   });
