@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "ts-node --project tsconfig.server.json src/server/server.ts",
-    "build": "next build",
-    "start": "NODE_ENV=production node dist/server/server.js"
+    "build": "next build && tsc --project tsconfig.server.json",
+    "start": "NODE_ENV=production node dist/server/server.js",
+    "lint": "next lint"
   },
   "dependencies": {
     "@types/ws": "^8.5.13",
