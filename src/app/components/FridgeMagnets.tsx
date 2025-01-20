@@ -41,8 +41,7 @@ const FridgeMagnets = () => {
   const CURSOR_UPDATE_INTERVAL = 50; // ms
 
   useEffect(() => {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    const wsUrl = `ws://${window.location.hostname}:3000/ws`;
     const ws = new WebSocket(wsUrl);
 
     ws.onmessage = (event) => {
