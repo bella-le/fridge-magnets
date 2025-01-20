@@ -5,6 +5,7 @@ import { BoardState } from './BoardState';
 import next from 'next';
 
 const dev = process.env.NODE_ENV !== 'production';
+const PORT = process.env.PORT || 3000;
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
@@ -79,7 +80,6 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  const PORT = process.env.PORT || 3000;
   httpServer.listen(PORT, () => {
     console.log(`> Ready on http://localhost:${PORT}`);
   });

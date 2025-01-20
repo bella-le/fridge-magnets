@@ -46,7 +46,7 @@ export class BoardState {
       type: 'init',
       words: this.words,
       clients: Array.from(this.clients.entries()).map(([id, client]) => ({
-        id: client.id,
+        id: id,
         color: client.color,
         cursorX: client.cursorX,
         cursorY: client.cursorY
@@ -92,7 +92,7 @@ export class BoardState {
     }
   }
 
-  private broadcast(message: any) {
+  private broadcast(message: any) { // eslint-disable-line
     const messageStr = JSON.stringify(message);
     this.clients.forEach(client => {
       if (client.ws.readyState === WebSocket.OPEN) {
@@ -101,7 +101,7 @@ export class BoardState {
     });
   }
 
-  private sendToClient(clientId: string, message: any) {
+  private sendToClient(clientId: string, message: any) { // eslint-disable-line
     const client = this.clients.get(clientId);
     if (client && client.ws.readyState === WebSocket.OPEN) {
       client.ws.send(JSON.stringify(message));
@@ -112,7 +112,7 @@ export class BoardState {
     this.broadcast({
       type: 'clients',
       clients: Array.from(this.clients.entries()).map(([id, client]) => ({
-        id: client.id,
+        id: id,
         color: client.color,
         cursorX: client.cursorX,
         cursorY: client.cursorY

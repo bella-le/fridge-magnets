@@ -29,7 +29,7 @@ const FridgeMagnets = () => {
   const boardRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const dragInfo = useRef({
-    wordId: null,
+    wordId: null as number | null,
     startX: 0,
     startY: 0,
     offsetX: 0,
