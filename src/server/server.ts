@@ -15,7 +15,7 @@ const initialWords = [
 'jump', 'dance', 'eat', 'cook', 'sing', 'run', 'play', 'read', 'write', 'think',
 'sun', 'moon', 'star', 'sky', 'ocean', 'flower', 'tree', 'river', 'snow', 'breeze',
 'magic', 'sparkle', 'butterfly', 'wish', 'mystery', 'adventure', 'glitter', 'wander', 'galaxy',
-'and', 'or', 'but', 'if', 'why', 'because', 'not', 'for', 'of', 'with', 'under', 'above', 'beside', 'below', 'on'
+'and', 'or', 'but', 'if', 'why', 'because', 'not', 'for', 'of', 'with', 'under', 'above', 'beside', 'below', 'on',
 'why', 'how', 'when', 'where', 'who', 'the', 'the', 'a', 'a', 'an', 's', ',', ',',
 'i', 'you', 'we', 'us', 'they', 'them', 'it', 'me', 'myself', 'yours', 'she', 'he', 's', '\'s'
 ].map((text, id) => ({
