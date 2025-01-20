@@ -17,7 +17,9 @@ const initialWords = [
 'magic', 'sparkle', 'butterfly', 'wish', 'mystery', 'adventure', 'glitter', 'wander', 'galaxy',
 'and', 'or', 'but', 'if', 'why', 'because', 'not', 'for', 'of', 'with', 'under', 'above', 'beside', 'below', 'on',
 'why', 'how', 'when', 'where', 'who', 'the', 'the', 'a', 'a', 'an', 's', ',', ',',
-'i', 'you', 'we', 'us', 'they', 'them', 'it', 'me', 'myself', 'yours', 'she', 'he', 's', '\'s', 'girl', 'boy'
+'i', 'you', 'we', 'us', 'they', 'them', 'it', 'me', 'myself', 'yours', 'she', 'he', 's', '\'s', 'girl', 'boy', 'ing', 'ed',
+'do', 'lie', 'there', 'afraid', 'beautiful', 'starry', 'night', 'cloudy', 'windy', 'rainy', 'sunny', 'warm', 'cool',
+'lovely', 'dream', 'ing'
 ].map((text, id) => ({
   id,
   text,
