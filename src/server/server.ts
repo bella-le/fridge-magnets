@@ -20,8 +20,8 @@ const initialWords = [
 ].map((text, id) => ({
   id,
   text,
-  x: 20 + (id % 8) * 100,
-  y: 20 + Math.floor(id / 8) * 40
+  x: 20 + (id % 12) * 100,
+  y: 20 + Math.floor(id / 12) * 40
 }));
 
 const boardState = new BoardState(initialWords);
