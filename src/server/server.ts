@@ -74,6 +74,12 @@ app.prepare().then(() => {
               clientId
             );
             break;
+          case 'removeFromCanvas':
+            boardState.removeFromCanvas(
+              data.wordId,
+              clientId
+            );
+            break;
           default:
             console.log('Unknown message type:', data.type);
         }

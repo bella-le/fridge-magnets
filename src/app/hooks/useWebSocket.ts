@@ -10,6 +10,7 @@ interface WebSocketMessage {
   y?: number;
   clientId?: string;
   addedBy?: string;
+  removedBy?: string;
 }
 
 export const useWebSocket = (
@@ -17,7 +18,8 @@ export const useWebSocket = (
   onWordMoved: (wordId: number, x: number, y: number) => void,
   onClientsUpdate: (clients: Client[]) => void,
   onCursorMoved: (clientId: string, x: number, y: number) => void,
-  onWordAddedToCanvas: (wordId: number, x: number, y: number) => void
+  onWordAddedToCanvas: (wordId: number, x: number, y: number) => void,
+  onWordRemovedFromCanvas?: (wordId: number) => void
 ) => {
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -60,6 +62,11 @@ export const useWebSocket = (
             onWordAddedToCanvas(data.wordId, data.x, data.y);
           }
           break;
+        case 'wordRemovedFromCanvas':
+          if (data.wordId !== undefined && onWordRemovedFromCanvas) {
+            onWordRemovedFromCanvas(data.wordId);
+          }
+          break;
       }
     };
 
@@ -68,16 +75,13 @@ export const useWebSocket = (
     return () => {
       ws.close();
     };
-  }, [onInit, onWordMoved, onClientsUpdate, onCursorMoved, onWordAddedToCanvas]);
+  }, [onInit, onWordMoved, onClientsUpdate, onCursorMoved, onWordAddedToCanvas, onWordRemovedFromCanvas]);
 
-  const sendMessage = (message: WebSocketMessage) => {
+  const sendMessage = (message: any) => { // eslint-disable-line
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(message));
     }
   };
 
-  return {
-    sendMessage,
-    wsRef,
-  };
+  return { sendMessage, wsRef };
 };

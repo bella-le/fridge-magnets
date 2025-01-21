@@ -109,6 +109,20 @@ export class BoardState {
     }
   }
 
+  removeFromCanvas(wordId: number, clientId: string) {
+    const word = this.words.find(w => w.id === wordId);
+    if (word && word.onCanvas) {
+      word.onCanvas = false;
+      word.x = 0;
+      word.y = 0;
+      this.broadcast({
+        type: 'wordRemovedFromCanvas',
+        wordId,
+        removedBy: clientId
+      });
+    }
+  }
+
   private broadcast(message: any) { // eslint-disable-line
     const messageStr = JSON.stringify(message);
     this.clients.forEach(client => {

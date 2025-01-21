@@ -65,13 +65,31 @@ const FridgeMagnets = () => {
     );
   }, []);
 
+  const handleWordRemovedFromCanvas = useCallback((wordId: number) => {
+    setWords(prevWords => 
+      prevWords.map(word => 
+        word.id === wordId 
+          ? { ...word, onCanvas: false }
+          : word
+      )
+    );
+  }, []);
+
   const { sendMessage, wsRef } = useWebSocket(
     handleInit,
     handleWordMoved,
     handleClientsUpdate,
     handleCursorMoved,
-    handleWordAddedToCanvas
+    handleWordAddedToCanvas,
+    handleWordRemovedFromCanvas
   );
+
+  const handleWordDelete = useCallback((wordId: number) => {
+    sendMessage({
+      type: 'removeFromCanvas',
+      wordId
+    });
+  }, [sendMessage]);
 
   // Memoize cursor callback
   const handleCursorUpdate = useCallback((x: number, y: number) => {
@@ -102,17 +120,26 @@ const FridgeMagnets = () => {
 
   // Handle word selection from box
   const handleWordSelect = useCallback((word: Word) => {
-    // Place the word in a random position on the canvas
-    const x = Math.random() * (CANVAS_WIDTH - 200) + 100;
-    const y = Math.random() * (CANVAS_HEIGHT - 200) + 100;
+    // Calculate the center of the viewport in screen coordinates
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const screenCenterX = viewportWidth / 2;
+    const screenCenterY = viewportHeight / 2;
+
+    // Convert screen coordinates to canvas coordinates
+    const { x, y } = calculateRelativePosition(screenCenterX, screenCenterY);
+    
+    // Add a small random rotation for a natural look
+    const rotation = Math.random() * 10 - 5; // Random rotation between -5 and 5 degrees
     
     sendMessage({
       type: 'addToCanvas',
       wordId: word.id,
       x,
-      y
+      y,
+      rotation
     });
-  }, [sendMessage, CANVAS_WIDTH, CANVAS_HEIGHT]);
+  }, [sendMessage, calculateRelativePosition]);
 
   useLayoutEffect(() => {
     const updateDeviceType = () => {
@@ -230,6 +257,7 @@ const FridgeMagnets = () => {
           canvasHeight={CANVAS_HEIGHT}
           onWordMouseDown={handleMouseDown}
           onWordTouchStart={handleTouchStart}
+          onWordDelete={handleWordDelete}
         />
       </div>
       <WordBox

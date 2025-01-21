@@ -38,7 +38,6 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
             height: '100%',
             objectFit: 'cover',
             borderRadius: '8px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
           }}
         />
         {availableWords.length > 0 && (

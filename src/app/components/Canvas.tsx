@@ -22,6 +22,7 @@ interface CanvasProps {
   canvasHeight: number;
   onWordMouseDown: (e: React.MouseEvent, wordId: number) => void;
   onWordTouchStart: (e: React.TouchEvent, wordId: number) => void;
+  onWordDelete: (wordId: number) => void;
 }
 
 export const Canvas: React.FC<CanvasProps> = ({
@@ -36,6 +37,7 @@ export const Canvas: React.FC<CanvasProps> = ({
   canvasHeight,
   onWordMouseDown,
   onWordTouchStart,
+  onWordDelete,
 }) => {
   return (
     <div style={{
@@ -63,8 +65,7 @@ export const Canvas: React.FC<CanvasProps> = ({
           />
         );
       })}
-      {/* Words */}
-      {words.map((word) => (
+      {words.map(word => (
         <WordComponent
           key={word.id}
           {...word}
@@ -72,6 +73,7 @@ export const Canvas: React.FC<CanvasProps> = ({
           isDragging={dragInfo.current.wordId === word.id}
           onMouseDown={(e) => onWordMouseDown(e, word.id)}
           onTouchStart={(e) => onWordTouchStart(e, word.id)}
+          onDeleteClick={onWordDelete}
         />
       ))}
     </div>
