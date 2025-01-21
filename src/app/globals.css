@@ -14,18 +14,46 @@
   }
 }
 
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
   cursor: none;
   transition: cursor 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
 }
 
 * {
   cursor: none !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 *:hover {
   cursor: none !important;
+}
+
+@media (max-width: 768px) {
+  * {
+    cursor: auto !important;
+  }
+  
+  body {
+    cursor: auto;
+  }
+  
+  .cursor-none {
+    display: none;
+  }
 }
