@@ -5,6 +5,7 @@ interface Word {
   text: string;
   x: number;
   y: number;
+  onCanvas: boolean;
 }
 
 interface Client {
@@ -79,7 +80,7 @@ export class BoardState {
 
   updateWordPosition(wordId: number, x: number, y: number, clientId: string) {
     const word = this.words.find(w => w.id === wordId);
-    if (word) {
+    if (word && word.onCanvas) {
       word.x = x;
       word.y = y;
       this.broadcast({
@@ -88,6 +89,22 @@ export class BoardState {
         x,
         y,
         movedBy: clientId
+      });
+    }
+  }
+
+  addWordToCanvas(wordId: number, x: number, y: number, clientId: string) {
+    const word = this.words.find(w => w.id === wordId);
+    if (word && !word.onCanvas) {
+      word.onCanvas = true;
+      word.x = x;
+      word.y = y;
+      this.broadcast({
+        type: 'wordAddedToCanvas',
+        wordId,
+        x,
+        y,
+        addedBy: clientId
       });
     }
   }

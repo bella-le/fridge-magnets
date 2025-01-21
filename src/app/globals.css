@@ -27,30 +27,17 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
-  cursor: none;
-  transition: cursor 0.1s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: none;
 }
 
-* {
-  cursor: none !important;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-*:hover {
+.fridge-board {
   cursor: none !important;
 }
 
 @media (max-width: 768px) {
   * {
     cursor: auto !important;
-  }
-  
-  body {
-    cursor: auto;
   }
   
   .cursor-none {

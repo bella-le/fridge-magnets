@@ -9,7 +9,6 @@ interface CanvasProps {
   scale: number;
   position: { x: number; y: number };
   isMobile: boolean;
-  localCursor: { x: number; y: number };
   wsRef: React.RefObject<WebSocket>;
   dragInfo: React.MutableRefObject<{
     wordId: number | null;
@@ -31,7 +30,6 @@ export const Canvas: React.FC<CanvasProps> = ({
   scale,
   position,
   isMobile,
-  localCursor,
   wsRef,
   dragInfo,
   canvasWidth,
@@ -48,21 +46,20 @@ export const Canvas: React.FC<CanvasProps> = ({
       height: `${canvasHeight}px`,
       background: `url('/fridge_texture.jpg') repeat`,
       boxShadow: '0 0 20px rgba(0,0,0,0.1)',
-      borderRadius: '8px'
+      borderRadius: '8px',
     }}>
-      {/* Cursors */}
+      {/* Only show cursors for other clients */}
       {clients.map(client => {
         const isLocalClient = client.id === wsRef.current?.url;
-        const cursorX = isLocalClient ? localCursor.x : client.cursorX;
-        const cursorY = isLocalClient ? localCursor.y : client.cursorY;
+        if (isLocalClient) return null;
         
         return (
           <Cursor
             key={client.id}
-            x={cursorX}
-            y={cursorY}
+            x={client.cursorX}
+            y={client.cursorY}
             color={client.color}
-            isLocal={isLocalClient}
+            isLocal={false}
           />
         );
       })}

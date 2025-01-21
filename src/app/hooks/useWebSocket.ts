@@ -9,13 +9,15 @@ interface WebSocketMessage {
   x?: number;
   y?: number;
   clientId?: string;
+  addedBy?: string;
 }
 
 export const useWebSocket = (
   onInit: (words: Word[], clients: Client[]) => void,
   onWordMoved: (wordId: number, x: number, y: number) => void,
   onClientsUpdate: (clients: Client[]) => void,
-  onCursorMoved: (clientId: string, x: number, y: number) => void
+  onCursorMoved: (clientId: string, x: number, y: number) => void,
+  onWordAddedToCanvas: (wordId: number, x: number, y: number) => void
 ) => {
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -53,6 +55,11 @@ export const useWebSocket = (
             onCursorMoved(data.clientId, data.x, data.y);
           }
           break;
+        case 'wordAddedToCanvas':
+          if (data.wordId !== undefined && data.x !== undefined && data.y !== undefined) {
+            onWordAddedToCanvas(data.wordId, data.x, data.y);
+          }
+          break;
       }
     };
 
@@ -61,7 +68,7 @@ export const useWebSocket = (
     return () => {
       ws.close();
     };
-  }, [onInit, onWordMoved, onClientsUpdate, onCursorMoved]);
+  }, [onInit, onWordMoved, onClientsUpdate, onCursorMoved, onWordAddedToCanvas]);
 
   const sendMessage = (message: WebSocketMessage) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {

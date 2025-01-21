@@ -23,8 +23,9 @@ const initialWords = [
 ].map((text, id) => ({
   id,
   text,
-  x: 20 + (id % 12) * 100,
-  y: 20 + Math.floor(id / 12) * 40
+  x: 0,
+  y: 0,
+  onCanvas: false
 }));
 
 const boardState = new BoardState(initialWords);
@@ -63,6 +64,14 @@ app.prepare().then(() => {
               clientId,
               data.x,
               data.y
+            );
+            break;
+          case 'addToCanvas':
+            boardState.addWordToCanvas(
+              data.wordId,
+              data.x,
+              data.y,
+              clientId
             );
             break;
           default:

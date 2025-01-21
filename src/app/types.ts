@@ -4,6 +4,7 @@ export interface Word {
   x: number;
   y: number;
   rotation?: number;
+  onCanvas: boolean;
 }
 
 export interface Client {

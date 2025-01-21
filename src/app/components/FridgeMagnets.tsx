@@ -3,6 +3,7 @@
 import React, { useRef, useState, useLayoutEffect, useCallback } from 'react';
 import { Word, Client } from '../types';
 import { Canvas } from './Canvas';
+import { WordBox } from './WordBox';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useCursor } from '../hooks/useCursor';
 import { useZoom } from '../hooks/useZoom';
@@ -17,6 +18,7 @@ const FridgeMagnets = () => {
   const [words, setWords] = useState<Word[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [isMobile, setIsMobile] = useState(false);
+  const [isWordBoxOpen, setIsWordBoxOpen] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
 
   const { scale, handleZoom, handlePinchZoom } = useZoom(1);
@@ -53,11 +55,22 @@ const FridgeMagnets = () => {
     );
   }, []);
 
+  const handleWordAddedToCanvas = useCallback((wordId: number, x: number, y: number) => {
+    setWords(prevWords => 
+      prevWords.map(word => 
+        word.id === wordId 
+          ? { ...word, x, y, onCanvas: true }
+          : word
+      )
+    );
+  }, []);
+
   const { sendMessage, wsRef } = useWebSocket(
     handleInit,
     handleWordMoved,
     handleClientsUpdate,
-    handleCursorMoved
+    handleCursorMoved,
+    handleWordAddedToCanvas
   );
 
   // Memoize cursor callback
@@ -87,6 +100,20 @@ const FridgeMagnets = () => {
     WORD_PADDING
   );
 
+  // Handle word selection from box
+  const handleWordSelect = useCallback((word: Word) => {
+    // Place the word in a random position on the canvas
+    const x = Math.random() * (CANVAS_WIDTH - 200) + 100;
+    const y = Math.random() * (CANVAS_HEIGHT - 200) + 100;
+    
+    sendMessage({
+      type: 'addToCanvas',
+      wordId: word.id,
+      x,
+      y
+    });
+  }, [sendMessage, CANVAS_WIDTH, CANVAS_HEIGHT]);
+
   useLayoutEffect(() => {
     const updateDeviceType = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -110,7 +137,9 @@ const FridgeMagnets = () => {
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    updateCursorPosition(e.clientX, e.clientY);
+    if (!isWordBoxOpen) {
+      updateCursorPosition(e.clientX, e.clientY);
+    }
 
     const { x, y } = calculateRelativePosition(e.clientX, e.clientY);
     if (dragging && !dragInfo.current.isTouchEvent) {
@@ -161,42 +190,54 @@ const FridgeMagnets = () => {
     }
   };
 
+  // Get words that are not on the canvas
+  const availableWords = words.filter(word => !word.onCanvas);
+  const canvasWords = words.filter(word => word.onCanvas);
+
   return (
-    <div 
-      ref={boardRef}
-      style={{
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: `translate(-50%, -50%)`,
-        width: '100vw',
-        height: '100vh',
-        background: '#f0f0f0',
-        overflow: 'hidden',
-        touchAction: 'none'
-      }}
-      onMouseDown={(e) => handleMouseDown(e)}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-      onTouchStart={(e) => handleTouchStart(e)}
-      onWheel={handleWheel}
-    >
-      <Canvas
-        words={words}
-        clients={clients}
-        scale={scale}
-        position={position}
-        isMobile={isMobile}
-        localCursor={localCursor}
-        wsRef={wsRef}
-        dragInfo={dragInfo}
-        canvasWidth={CANVAS_WIDTH}
-        canvasHeight={CANVAS_HEIGHT}
-        onWordMouseDown={handleMouseDown}
-        onWordTouchStart={handleTouchStart}
+    <>
+      <div 
+        ref={boardRef}
+        className={isWordBoxOpen ? '' : 'fridge-board'}
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: `translate(-50%, -50%)`,
+          width: '100vw',
+          height: '100vh',
+          background: '#f0f0f0',
+          overflow: 'hidden',
+          touchAction: 'none'
+        }}
+        onMouseDown={(e) => handleMouseDown(e)}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={(e) => handleTouchStart(e)}
+        onWheel={handleWheel}
+      >
+        <Canvas
+          words={canvasWords}
+          clients={clients}
+          scale={scale}
+          position={position}
+          isMobile={isMobile}
+          localCursor={localCursor}
+          wsRef={wsRef}
+          dragInfo={dragInfo}
+          canvasWidth={CANVAS_WIDTH}
+          canvasHeight={CANVAS_HEIGHT}
+          onWordMouseDown={handleMouseDown}
+          onWordTouchStart={handleTouchStart}
+        />
+      </div>
+      <WordBox
+        availableWords={availableWords}
+        onWordSelect={handleWordSelect}
+        onOpenChange={setIsWordBoxOpen}
       />
-    </div>
+    </>
   );
 };
 
