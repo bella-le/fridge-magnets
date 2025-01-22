@@ -26,8 +26,8 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
         }}
         style={{
           position: 'fixed',
-          bottom: '20px',
-          right: '20px',
+          bottom: 'max(20px, env(safe-area-inset-bottom))',
+          right: 'max(20px, env(safe-area-inset-right))',
           width: '80px',
           height: '80px',
           cursor: 'pointer',

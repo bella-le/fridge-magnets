@@ -15,8 +15,8 @@ export const MuteButton: React.FC<MuteButtonProps> = ({ isMuted, onToggle }) => 
       }}
       style={{
         position: 'fixed',
-        bottom: '20px',
-        right: '110px',
+        bottom: 'max(20px, env(safe-area-inset-bottom))',
+        right: 'max(110px, calc(env(safe-area-inset-right) + 90px))',
         width: '48px',
         height: '48px',
         borderRadius: '8px',
