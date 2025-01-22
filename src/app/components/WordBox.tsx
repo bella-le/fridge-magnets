@@ -20,6 +20,10 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
       {/* Box Image */}
       <div
         onClick={() => handleOpenChange(true)}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          handleOpenChange(true);
+        }}
         style={{
           position: 'fixed',
           bottom: '20px',
@@ -28,6 +32,8 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
           height: '80px',
           cursor: 'pointer',
           zIndex: 2000,
+          WebkitTapHighlightColor: 'transparent',
+          touchAction: 'manipulation',
         }}
       >
         <img 
@@ -122,8 +128,15 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
                       onWordSelect(word);
                       handleOpenChange(false);
                     }}
+                    onTouchEnd={(e) => {
+                      e.preventDefault();
+                      onWordSelect(word);
+                      handleOpenChange(false);
+                    }}
                     style={{
-                      '--random-rotation': `${rotation}deg`
+                      '--random-rotation': `${rotation}deg`,
+                      touchAction: 'manipulation',
+                      WebkitTapHighlightColor: 'transparent',
                     } as React.CSSProperties}
                   >
                     {word.text}

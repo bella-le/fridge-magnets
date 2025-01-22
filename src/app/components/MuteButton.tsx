@@ -9,12 +9,16 @@ export const MuteButton: React.FC<MuteButtonProps> = ({ isMuted, onToggle }) => 
   return (
     <button
       onClick={onToggle}
+      onTouchEnd={(e) => {
+        e.preventDefault();
+        onToggle();
+      }}
       style={{
         position: 'fixed',
         bottom: '20px',
         right: '110px',
-        width: '40px',
-        height: '40px',
+        width: '48px',
+        height: '48px',
         borderRadius: '8px',
         border: 'none',
         background: 'white',
@@ -24,6 +28,9 @@ export const MuteButton: React.FC<MuteButtonProps> = ({ isMuted, onToggle }) => 
         alignItems: 'center',
         justifyContent: 'center',
         transition: 'transform 0.2s',
+        WebkitTapHighlightColor: 'transparent',
+        touchAction: 'manipulation',
+        zIndex: 2000,
       }}
       title={isMuted ? "Unmute magnet sounds" : "Mute magnet sounds"}
     >
