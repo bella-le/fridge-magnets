@@ -27,8 +27,16 @@ export class BoardState {
 
   private getRandomColor(): string {
     const colors = [
-      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD',
-      '#D4A5A5', '#9B59B6', '#3498DB', '#E67E22', '#2ECC71'
+      '#FFB3B3', // pastel red
+      '#BAFFC9', // pastel green
+      '#BAE1FF', // pastel blue
+      '#FFE4BA', // pastel orange
+      '#E2BAFF', // pastel purple
+      '#FFDFBA', // pastel peach
+      '#FFC9DE', // pastel pink
+      '#C4FAF8', // pastel turquoise
+      '#DBBAFF', // pastel lavender
+      '#FFFFBA'  // pastel yellow
     ];
     return colors[Math.floor(Math.random() * colors.length)];
   }

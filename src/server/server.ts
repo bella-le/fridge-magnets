@@ -11,15 +11,29 @@ const handle = app.getRequestHandler();
 
 // Initial words defined only once, in the backend
 const initialWords = [
-'love', 'happy', 'sad', 'joy', 'smile', 'laugh', 'hope', 'dream', 'fear', 'wonder',
-'jump', 'dance', 'eat', 'cook', 'sing', 'run', 'play', 'read', 'write', 'think',
-'sun', 'moon', 'star', 'sky', 'ocean', 'flower', 'tree', 'river', 'snow', 'breeze',
-'magic', 'sparkle', 'butterfly', 'wish', 'mystery', 'adventure', 'glitter', 'wander', 'galaxy',
-'and', 'or', 'but', 'if', 'why', 'because', 'not', 'for', 'of', 'with', 'under', 'above', 'beside', 'below', 'on',
-'why', 'how', 'when', 'where', 'who', 'the', 'the', 'a', 'a', 'an', 's', ',', ',',
-'i', 'you', 'we', 'us', 'they', 'them', 'it', 'me', 'myself', 'yours', 'she', 'he', 's', '\'s', 'girl', 'boy', 'ing', 'ed',
-'do', 'lie', 'there', 'afraid', 'beautiful', 'starry', 'night', 'cloudy', 'windy', 'rainy', 'sunny', 'warm', 'cool',
-'lovely', 'dream', 'ing'
+'\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '&', ',', ',', ',', ',', ',', '?',
+'?', '?', '?', '?', '!', '!', '!', '!', '!', ';', ';', ';', ';', ';', 'a', 'a', 'a', 'a', 'a', 'above',
+'above', 'above', 'afraid', 'alien', 'all', 'always', 'amazing', 'amazing', 'an', 'an', 'an', 'an', 'an', 'and', 'and',
+'ask', 'awesome', 'awesome', 'because', 'belong', 'below', 'below', 'below', 'bitter', 'bitch', 'blobfish', 'bloom', 'blue', 'breeze',
+'bird', 'but', 'but', 'by', 'by', 'by', 'calm', 'celebrate', 'chaos', 'child', 'children', 'cloud', 'cold', 'coffee', 'comet',
+'cosmos', 'crazy', 'crazy', 'crescent', 'cry', 'curious', 'damn', 'dinosaur', 'discover', 'disco', 'do', 'do', 'dream', 'dream', 'duck',
+'dusk', 'ed', 'ed', 'ed', 'ed', 'ed', 'ed', 'ed', 'ed', 'er', 'er', 'er', 'er', 'er', 'er',
+'er', 'er', 'es', 'es', 'es', 'es', 'es', 'es', 'es', 'es', 'evening', 'excited', 'explore', 'fear', 'feel',
+'feel', 'fluffy', 'flower', 'forever', 'Freud', 'from', 'from', 'from', 'fuck', 'fuzzy', 'galaxy', 'ghost', 'giant', 'giraffe', 'go',
+'go', 'goose', 'grapefruit', 'green', 'happy', 'he', 'he', 'hell', 'herself', 'herself', 'himself', 'himself', 'hot', 'how', 'how',
+'huge', 'huh', 'huh', 'hungry', 'I', 'I', 'if', 'if', 'in', 'in', 'in', 'ing', 'ing', 'ing',
+'ing', 'ing', 'ing', 'ing', 'ing', 'it', 'it', 'its', 'its', 'jellyfish', 'juice', 'kazoo', 'ketchup', 'kumquat', 'lasagna',
+'lie', 'life', 'light', 'like', 'like', 'listen', 'listen', 'love', 'love', 'lovely', 'lovely', 'ly', 'ly', 'magic', 'me',
+'me', 'meh', 'meh', 'midnight', 'moon', 'morning', 'my', 'myself', 'myself', 'near', 'near', 'near', 'never', 'night', 'night',
+'Nietzsche', 'now', 'ocean', 'Oedipus', 'oh', 'oh', 'only', 'or', 'or', 'out', 'out', 'out', 'over', 'over', 'over',
+'peace', 'pigeon', 'pink', 'platypus', 'poo', 'poop', 'purple', 'robot', 's', 's', 's', 's', 's', 's', 's',
+'s', 'sad', 'said', 'said', 'say', 'say', 'see', 'see', 'shadow', 'she', 'she', 'shiny', 'shit', 'shore',
+'sit', 'sky', 'sleepy', 'sloth', 'so', 'so', 'so', 'soft', 'sparkle', 'sparkly', 'spaghetti', 'star', 'starry', 'strong', 'sun',
+'sweet', 'tea', 'that', 'that', 'the', 'the', 'the', 'the', 'the', 'them', 'them', 'they', 'they', 'think', 'think',
+'this', 'this', 'through', 'through', 'through', 'tiny', 'tired', 'to', 'to', 'to', 'today', 'together', 'tomorrow', 'twilight', 'under',
+'under', 'under', 'universe', 'us', 'us', 'universe', 'wave', 'we', 'we', 'weird', 'weird', 'what', 'what', 'when', 'when',
+'where', 'where', 'who', 'who', 'why', 'why', 'wild', 'wild', 'wind', 'with', 'with', 'with', 'within', 'within', 'within',
+'wow', 'wow', 'yay', 'yay', 'yellow', 'yesterday', 'yo-yo', 'you', 'you', 'yourself', 'yourself', 'zucchini'
 ].map((text, id) => ({
   id,
   text,
