@@ -13,7 +13,7 @@ const handle = app.getRequestHandler();
 const initialWords = [
 '\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '&', ',', ',', ',', ',', ',', '?',
 '?', '?', '?', '?', '!', '!', '!', '!', '!', ';', ';', ';', ';', ';', 'a', 'a', 'a', 'a', 'a', 'above',
-'above', 'above', 'afraid', 'alien', 'all', 'always', 'amazing', 'amazing', 'an', 'an', 'an', 'an', 'an', 'and', 'and',
+'above', 'above', 'afraid', 'alien', 'all', 'always', 'amazing', 'amazing', 'am', 'am', 'an', 'an', 'an', 'and', 'and',
 'ask', 'awesome', 'awesome', 'because', 'belong', 'below', 'below', 'below', 'bitter', 'bitch', 'blobfish', 'bloom', 'blue', 'breeze',
 'bird', 'but', 'but', 'by', 'by', 'by', 'calm', 'celebrate', 'chaos', 'child', 'children', 'cloud', 'cold', 'coffee', 'comet',
 'cosmos', 'crazy', 'crazy', 'crescent', 'cry', 'curious', 'damn', 'dinosaur', 'discover', 'disco', 'do', 'do', 'dream', 'dream', 'duck',
