@@ -35,28 +35,25 @@ export const useDrag = (
   });
 
   const startDrag = (
-    clientX: number,
-    clientY: number,
+    boardX: number,
+    boardY: number,
     wordId: number,
     wordX: number,
     wordY: number,
     isTouchEvent: boolean
   ) => {
-    const rect = boardRef.current?.getBoundingClientRect();
-    if (!rect) return;
-
     // Calculate the position in canvas coordinates
-    const x = (clientX - rect.left) / scale;
-    const y = (clientY - rect.top) / scale;
+    const canvasX = boardX / scale;
+    const canvasY = boardY / scale;
 
-    // Calculate the offset relative to the word position
-    const offsetX = (x - position.x) - wordX;
-    const offsetY = (y - position.y) - wordY;
+    // Calculate the offset relative to the word position in canvas space
+    const offsetX = canvasX - (wordX + position.x);
+    const offsetY = canvasY - (wordY + position.y);
 
     dragInfo.current = {
       wordId,
-      startX: x,
-      startY: y,
+      startX: canvasX,
+      startY: canvasY,
       offsetX,
       offsetY,
       isTouchEvent
@@ -64,18 +61,18 @@ export const useDrag = (
     setDragging(true);
   };
 
-  const updateDragPosition = (x: number, y: number) => {
+  const updateDragPosition = (boardX: number, boardY: number) => {
     if (!dragging || dragInfo.current.wordId === null) return;
 
-    // Convert the position to canvas coordinates
-    const canvasX = x / scale - position.x;
-    const canvasY = y / scale - position.y;
+    // Convert board coordinates to canvas coordinates
+    const canvasX = boardX / scale;
+    const canvasY = boardY / scale;
 
     // Calculate new position with boundaries
     const newX = Math.max(wordPadding, 
-      Math.min(canvasWidth - wordPadding, canvasX - dragInfo.current.offsetX));
+      Math.min(canvasWidth - wordPadding, canvasX - dragInfo.current.offsetX - position.x));
     const newY = Math.max(wordPadding, 
-      Math.min(canvasHeight - wordPadding, canvasY - dragInfo.current.offsetY));
+      Math.min(canvasHeight - wordPadding, canvasY - dragInfo.current.offsetY - position.y));
 
     onWordMove(dragInfo.current.wordId, newX, newY);
   };

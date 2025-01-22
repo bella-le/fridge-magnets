@@ -88,22 +88,37 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
               handleOpenChange(false);
             }
           }}
+          onTouchStart={(e) => {
+            // Prevent touch events from reaching the canvas
+            e.stopPropagation();
+          }}
+          onTouchMove={(e) => {
+            // Prevent touch events from reaching the canvas
+            e.stopPropagation();
+          }}
           onTouchEnd={(e) => {
+            e.stopPropagation();
             if (e.target === e.currentTarget) {
               e.preventDefault();
               handleOpenChange(false);
             }
           }}
         >
-          <div style={{
-            background: 'white',
-            padding: '20px',
-            borderRadius: '8px',
-            maxWidth: '80%',
-            maxHeight: '80%',
-            overflow: 'auto',
-            position: 'relative',
-          }}>
+          <div 
+            style={{
+              background: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              maxWidth: '80%',
+              maxHeight: '80%',
+              overflow: 'auto',
+              position: 'relative',
+              WebkitOverflowScrolling: 'touch', // Enable smooth scrolling on iOS
+            }}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+            onTouchEnd={(e) => e.stopPropagation()}
+          >
             <button
               onClick={() => handleOpenChange(false)}
               onTouchEnd={(e) => {

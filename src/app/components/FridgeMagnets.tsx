@@ -158,10 +158,14 @@ const FridgeMagnets = () => {
 
   const handleMouseDown = (e: React.MouseEvent, wordId?: number) => {
     if (wordId !== undefined) {
-      calculateRelativePosition(e.clientX, e.clientY);
+      const rect = boardRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
       const word = words.find(w => w.id === wordId);
       if (word) {
-        startDrag(e.clientX, e.clientY, wordId, word.x, word.y, false);
+        startDrag(x, y, wordId, word.x, word.y, false);
       }
     } else if (!dragging) {
       startPanning(e.clientX, e.clientY);
@@ -173,7 +177,12 @@ const FridgeMagnets = () => {
       updateCursorPosition(e.clientX, e.clientY);
     }
 
-    const { x, y } = calculateRelativePosition(e.clientX, e.clientY);
+    const rect = boardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
     if (dragging && !dragInfo.current.isTouchEvent) {
       updateDragPosition(x, y);
     } else if (isPanning) {
@@ -182,7 +191,7 @@ const FridgeMagnets = () => {
   };
 
   const handleTouchStart = (e: React.TouchEvent, wordId?: number) => {
-    e.preventDefault(); // Prevent default touch behavior
+    e.preventDefault();
     e.stopPropagation();
 
     if (e.touches.length === 2) {
@@ -203,9 +212,14 @@ const FridgeMagnets = () => {
 
     if (wordId !== undefined) {
       const touch = e.touches[0];
+      const rect = boardRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
       const word = words.find(w => w.id === wordId);
       if (word) {
-        startDrag(touch.clientX, touch.clientY, wordId, word.x, word.y, true);
+        startDrag(x, y, wordId, word.x, word.y, true);
       }
     } else {
       const touch = e.touches[0];
@@ -239,12 +253,11 @@ const FridgeMagnets = () => {
     const rect = boardRef.current?.getBoundingClientRect();
     if (!rect) return;
 
-    // Get the touch position relative to the board
-    const touchX = touch.clientX - rect.left;
-    const touchY = touch.clientY - rect.top;
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
     
     if (dragging && dragInfo.current.isTouchEvent) {
-      updateDragPosition(touchX, touchY);
+      updateDragPosition(x, y);
     } else if (!dragging) {
       updatePanPosition(touch.clientX, touch.clientY);
     }
