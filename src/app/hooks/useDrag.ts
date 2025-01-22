@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useSound } from './useSound';
 
 interface DragInfo {
   wordId: number | null;
@@ -21,7 +22,8 @@ export const useDrag = (
   onWordMove: (wordId: number, x: number, y: number) => void,
   canvasWidth: number,
   canvasHeight: number,
-  wordPadding: number
+  wordPadding: number,
+  onRelease?: () => void
 ) => {
   const [dragging, setDragging] = useState(false);
   const dragInfo = useRef<DragInfo>({
@@ -32,6 +34,8 @@ export const useDrag = (
     offsetY: 0,
     isTouchEvent: false
   });
+
+  const { playSound } = useSound('/magnet-sound.mp3');
 
   const startDrag = (
     clientX: number,
@@ -80,6 +84,9 @@ export const useDrag = (
   };
 
   const stopDrag = () => {
+    if (dragging && dragInfo.current.wordId !== null) {
+      onRelease?.();
+    }
     setDragging(false);
     dragInfo.current.wordId = null;
   };

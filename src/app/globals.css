@@ -36,17 +36,30 @@ body {
 }
 
 .word-box-item {
-  padding: 2px 4px;
-  background: white;
-  font-family: serif;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  padding: 6px 12px;
+  background: #f8f8f8;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 1.2rem;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
   cursor: pointer;
   user-select: none;
-  transition: transform 0.1s;
+  transition: all 0.15s ease-out;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  margin: 4px;
+  position: relative;
+  transform: rotate(var(--random-rotation, 0deg));
 }
 
 .word-box-item:hover {
-  transform: scale(1.05);
+  transform: scale(1.08) rotate(var(--random-rotation, 0deg));
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+  z-index: 1000;
+}
+
+.word-box-item:active {
+  transform: scale(1.12) rotate(var(--random-rotation, 0deg));
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
 }
 
 @media (max-width: 768px) {

@@ -4,11 +4,13 @@ import React, { useRef, useState, useLayoutEffect, useCallback } from 'react';
 import { Word, Client } from '../types';
 import { Canvas } from './Canvas';
 import { WordBox } from './WordBox';
+import { MuteButton } from './MuteButton';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useCursor } from '../hooks/useCursor';
 import { useZoom } from '../hooks/useZoom';
 import { usePanning } from '../hooks/usePanning';
 import { useDrag } from '../hooks/useDrag';
+import { useSound } from '../hooks/useSound';
 
 const CANVAS_WIDTH = 2000;
 const CANVAS_HEIGHT = 1200;
@@ -24,6 +26,8 @@ const FridgeMagnets = () => {
   const { scale, handleZoom } = useZoom(1);
   const { position, isPanning, startPanning, updatePanPosition, stopPanning } = 
     usePanning(CANVAS_WIDTH, CANVAS_HEIGHT, scale);
+
+  const { playSound, isMuted, toggleMute } = useSound('/magnet-sound.mp3');
 
   // Memoize WebSocket callbacks
   const handleInit = useCallback((words: Word[], clients: Client[]) => {
@@ -115,7 +119,8 @@ const FridgeMagnets = () => {
     handleWordMove,
     CANVAS_WIDTH,
     CANVAS_HEIGHT,
-    WORD_PADDING
+    WORD_PADDING,
+    playSound
   );
 
   // Handle word selection from box
@@ -272,52 +277,51 @@ const FridgeMagnets = () => {
   const canvasWords = words.filter(word => word.onCanvas);
 
   return (
-    <>
-      <div 
-        ref={boardRef}
-        className={isWordBoxOpen ? '' : 'fridge-board'}
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: `translate(-50%, -50%)`,
-          width: '100vw',
-          height: '100vh',
-          background: '#f0f0f0',
-          overflow: 'hidden',
-          touchAction: 'none'
-        }}
-        onMouseDown={(e) => handleMouseDown(e)}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={(e) => handleTouchStart(e)}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onWheel={handleWheel}
-      >
-        <Canvas
-          words={canvasWords}
-          clients={clients}
-          scale={scale}
-          position={position}
-          isMobile={isMobile}
-          localCursor={localCursor}
-          wsRef={wsRef}
-          dragInfo={dragInfo}
-          canvasWidth={CANVAS_WIDTH}
-          canvasHeight={CANVAS_HEIGHT}
-          onWordMouseDown={handleMouseDown}
-          onWordTouchStart={handleTouchStart}
-          onWordDelete={handleWordDelete}
-        />
-      </div>
+    <div 
+      ref={boardRef}
+      className={isWordBoxOpen ? '' : 'fridge-board'}
+      style={{
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: `translate(-50%, -50%)`,
+        width: '100vw',
+        height: '100vh',
+        background: '#f0f0f0',
+        overflow: 'hidden',
+        touchAction: 'none'
+      }}
+      onMouseDown={(e) => handleMouseDown(e)}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchStart={(e) => handleTouchStart(e)}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onWheel={handleWheel}
+    >
+      <Canvas
+        words={canvasWords}
+        clients={clients}
+        scale={scale}
+        position={position}
+        isMobile={isMobile}
+        localCursor={localCursor}
+        wsRef={wsRef}
+        dragInfo={dragInfo}
+        canvasWidth={CANVAS_WIDTH}
+        canvasHeight={CANVAS_HEIGHT}
+        onWordMouseDown={handleMouseDown}
+        onWordTouchStart={handleTouchStart}
+        onWordDelete={handleWordDelete}
+      />
       <WordBox
         availableWords={availableWords}
         onWordSelect={handleWordSelect}
         onOpenChange={setIsWordBoxOpen}
       />
-    </>
+      <MuteButton isMuted={isMuted} onToggle={toggleMute} />
+    </div>
   );
 };
 

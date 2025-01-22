@@ -99,36 +99,37 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
                 right: '10px',
                 background: 'none',
                 border: 'none',
-                fontSize: '20px',
                 cursor: 'pointer',
-                padding: '5px',
+                fontSize: '20px',
+                color: '#666',
               }}
             >
               ×
             </button>
-            <h2 style={{ marginBottom: '20px' }}>Available Words</h2>
             <div style={{
               display: 'flex',
               flexWrap: 'wrap',
-              gap: '10px',
-              maxWidth: '600px',
+              gap: '8px',
+              padding: '20px',
             }}>
-              {availableWords.map((word) => (
-                <div
-                  key={word.id}
-                  onClick={() => {
-                    onWordSelect(word);
-                    handleOpenChange(false);
-                  }}
-                  className="word-box-item"
-                  style={{
-                    display: 'inline-block',
-                    margin: '4px'
-                  }}
-                >
-                  {word.text}
-                </div>
-              ))}
+              {availableWords.map((word) => {
+                const rotation = Math.random() * 4 - 2; // Random rotation between -2 and 2 degrees
+                return (
+                  <div
+                    key={word.id}
+                    className="word-box-item"
+                    onClick={() => {
+                      onWordSelect(word);
+                      handleOpenChange(false);
+                    }}
+                    style={{
+                      '--random-rotation': `${rotation}deg`
+                    } as React.CSSProperties}
+                  >
+                    {word.text}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
