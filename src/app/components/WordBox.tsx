@@ -87,6 +87,12 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
               handleOpenChange(false);
             }
           }}
+          onTouchEnd={(e) => {
+            if (e.target === e.currentTarget) {
+              e.preventDefault();
+              handleOpenChange(false);
+            }
+          }}
         >
           <div style={{
             background: 'white',
@@ -99,6 +105,10 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
           }}>
             <button
               onClick={() => handleOpenChange(false)}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                handleOpenChange(false);
+              }}
               style={{
                 position: 'absolute',
                 top: '10px',
@@ -106,8 +116,12 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                fontSize: '20px',
+                fontSize: '24px',
                 color: '#666',
+                padding: '8px 12px',
+                touchAction: 'manipulation',
+                WebkitTapHighlightColor: 'transparent',
+                zIndex: 3001,
               }}
             >
               ×
