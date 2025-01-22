@@ -319,8 +319,9 @@ const FridgeMagnets = () => {
         availableWords={availableWords}
         onWordSelect={handleWordSelect}
         onOpenChange={setIsWordBoxOpen}
+        isMobile={isMobile}
       />
-      <MuteButton isMuted={isMuted} onToggle={toggleMute} />
+      <MuteButton isMuted={isMuted} onToggle={toggleMute} isMobile={isMobile} />
     </div>
   );
 };

@@ -5,9 +5,10 @@ interface WordBoxProps {
   availableWords: Word[];
   onWordSelect: (word: Word) => void;
   onOpenChange: (isOpen: boolean) => void;
+  isMobile?: boolean;
 }
 
-export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, onOpenChange }) => {
+export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, onOpenChange, isMobile }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenChange = (newIsOpen: boolean) => {
@@ -26,7 +27,7 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
         }}
         style={{
           position: 'fixed',
-          bottom: 'max(20px, env(safe-area-inset-bottom))',
+          bottom: isMobile ? '80px' : 'max(20px, env(safe-area-inset-bottom))',
           right: 'max(20px, env(safe-area-inset-right))',
           width: '80px',
           height: '80px',

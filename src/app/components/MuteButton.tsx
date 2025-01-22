@@ -3,9 +3,10 @@ import React from 'react';
 interface MuteButtonProps {
   isMuted: boolean;
   onToggle: () => void;
+  isMobile?: boolean;
 }
 
-export const MuteButton: React.FC<MuteButtonProps> = ({ isMuted, onToggle }) => {
+export const MuteButton: React.FC<MuteButtonProps> = ({ isMuted, onToggle, isMobile }) => {
   return (
     <button
       onClick={onToggle}
@@ -15,7 +16,7 @@ export const MuteButton: React.FC<MuteButtonProps> = ({ isMuted, onToggle }) => 
       }}
       style={{
         position: 'fixed',
-        bottom: 'max(20px, env(safe-area-inset-bottom))',
+        bottom: isMobile ? '80px' : 'max(20px, env(safe-area-inset-bottom))',
         right: 'max(110px, calc(env(safe-area-inset-right) + 90px))',
         width: '48px',
         height: '48px',
