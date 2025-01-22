@@ -120,17 +120,10 @@ export const WordBox: React.FC<WordBoxProps> = ({ availableWords, onWordSelect, 
                     onWordSelect(word);
                     handleOpenChange(false);
                   }}
+                  className="word-box-item"
                   style={{
-                    padding: '2px 4px',
-                    background: 'white',
-                    fontFamily: 'serif',
-                    boxShadow: '2px 2px 5px rgba(0,0,0,0.2)',
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    transition: 'transform 0.1s',
-                    ':hover': {
-                      transform: 'scale(1.05)',
-                    },
+                    display: 'inline-block',
+                    margin: '4px'
                   }}
                 >
                   {word.text}

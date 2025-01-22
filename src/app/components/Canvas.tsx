@@ -20,6 +20,7 @@ interface CanvasProps {
   }>;
   canvasWidth: number;
   canvasHeight: number;
+  localCursor: { x: number; y: number };
   onWordMouseDown: (e: React.MouseEvent, wordId: number) => void;
   onWordTouchStart: (e: React.TouchEvent, wordId: number) => void;
   onWordDelete: (wordId: number) => void;

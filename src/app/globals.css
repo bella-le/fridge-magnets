@@ -35,6 +35,20 @@ body {
   cursor: none !important;
 }
 
+.word-box-item {
+  padding: 2px 4px;
+  background: white;
+  font-family: serif;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s;
+}
+
+.word-box-item:hover {
+  transform: scale(1.05);
+}
+
 @media (max-width: 768px) {
   * {
     cursor: auto !important;

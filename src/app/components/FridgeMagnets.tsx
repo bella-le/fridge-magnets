@@ -21,7 +21,7 @@ const FridgeMagnets = () => {
   const [isWordBoxOpen, setIsWordBoxOpen] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
 
-  const { scale, handleZoom, handlePinchZoom } = useZoom(1);
+  const { scale, handleZoom } = useZoom(1);
   const { position, isPanning, startPanning, updatePanPosition, stopPanning } = 
     usePanning(CANVAS_WIDTH, CANVAS_HEIGHT, scale);
 
@@ -153,7 +153,7 @@ const FridgeMagnets = () => {
 
   const handleMouseDown = (e: React.MouseEvent, wordId?: number) => {
     if (wordId !== undefined) {
-      const { x, y } = calculateRelativePosition(e.clientX, e.clientY);
+      calculateRelativePosition(e.clientX, e.clientY);
       const word = words.find(w => w.id === wordId);
       if (word) {
         startDrag(e.clientX, e.clientY, wordId, word.x, word.y, false);
@@ -198,7 +198,7 @@ const FridgeMagnets = () => {
 
     e.preventDefault();
     const touch = e.touches[0];
-    const { x, y } = calculateRelativePosition(touch.clientX, touch.clientY);
+    calculateRelativePosition(touch.clientX, touch.clientY);
     const word = words.find(w => w.id === wordId);
     if (word) {
       startDrag(touch.clientX, touch.clientY, wordId, word.x, word.y, true);
