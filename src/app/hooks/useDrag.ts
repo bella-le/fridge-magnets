@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { useSound } from './useSound';
 
 interface DragInfo {
   wordId: number | null;
@@ -34,8 +33,6 @@ export const useDrag = (
     offsetY: 0,
     isTouchEvent: false
   });
-
-  const { playSound } = useSound('/magnet-sound.mp3');
 
   const startDrag = (
     clientX: number,
