@@ -11,7 +11,7 @@ const handle = app.getRequestHandler();
 
 // Initial words defined only once, in the backend
 const initialWords = [
-'\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '&', ',', ',', ',', ',', ',', '?',
+'\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '\'s', '&', ',', ',', ',', ',', ',', '--', '?',
 '?', '?', '?', '?', '!', '!', '!', '!', '!', ';', ';', ';', ';', ';', 'a', 'a', 'a', 'a', 'a', 'abg', 'above',
 'above', 'above', 'afraid', 'alcohol', 'alien', 'all', 'always', 'amazing', 'amazing', 'am', 'am', 'an', 'an', 'an', 'and', 'and', 'at', 'at',
 'ask', 'ass', 'awesome', 'awesome', 'because', 'belong', 'below', 'below', 'below', 'bitter', 'bitch', 'blobfish', 'bloom', 'blue', 'breeze',
@@ -28,10 +28,10 @@ const initialWords = [
 'Nietzsche', 'now', 'ocean', 'Oedipus', 'oh', 'only', 'or', 'or', 'out', 'out', 'out', 'over', 'over', 'over',
 'p', 'party', 'party', 'peace', 'people', 'pigeon', 'pink', 'platypus', 'poo', 'poop', 'psycho', 'purple', 'r', 'r', 'rave', 'rest', 'robot', 's', 's', 's', 's', 's', 's', 's',
 's', 'sad', 'said', 'said', 'say', 'say', 'see', 'see', 'shadow', 'she', 'she', 'shiny', 'shit', 'shore', 'shut',
-'sit', 'sky', 'sleepy', 'sloth', 'so', 'so', 'so', 'soft', 'sparkle', 'sparkly', 'spaghetti', 'star', 'starry', 'strong', 'stupid', 'sun',
+'sit', 'sky', 'sleepy', 'sloth', 'so', 'so', 'so', 'soft', 'sparkle', 'sparkly', 'spaghetti', 'special', 'star', 'starry', 'strong', 'stupid', 'sun',
 'sweet', 't', 'tea', 'that', 'that', 'the', 'the', 'the', 'the', 'the', 'them', 'them', 'they', 'they', 'think', 'think', 'time',
-'this', 'this', 'through', 'through', 'through', 'tiny', 'tired', 'to', 'to', 'to', 'today', 'together', 'tomorrow', 'twilight', 'under',
-'under', 'under', 'universe', 'us', 'us', 'up', 'universe', 'was', 'was', 'wave', 'we', 'we', 'weird', 'weird', 'what', 'what', 'when', 'when',
+'this', 'this', 'through', 'through', 'through', 'tiny', 'tired', 'to', 'to', 'to', 'today', 'together', 'tomorrow', 'twilight', 'ugly', 'under',
+'under', 'unique', 'universe', 'us', 'us', 'up', 'universe', 'was', 'was', 'wave', 'we', 'we', 'weird', 'weird', 'what', 'what', 'when', 'when',
 'where', 'where', 'who', 'who', 'why', 'why', 'wild', 'wild', 'wind', 'with', 'with', 'with', 'within', 'within', 'within',
 'wow', 'wow', 'y', 'y', 'yap', 'yak', 'ya', 'yay', 'yeah', 'yellow', 'yesterday', 'yo-yo', 'you', 'you', 'yourself', 'yourself', 'zucchini', 'bella', 'le'
 ].map((text, id) => ({
