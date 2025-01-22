@@ -33,7 +33,7 @@ const initialWords = [
 'this', 'this', 'through', 'through', 'through', 'tiny', 'tired', 'to', 'to', 'to', 'today', 'together', 'tomorrow', 'twilight', 'under',
 'under', 'under', 'universe', 'us', 'us', 'universe', 'was', 'was', 'wave', 'we', 'we', 'weird', 'weird', 'what', 'what', 'when', 'when',
 'where', 'where', 'who', 'who', 'why', 'why', 'wild', 'wild', 'wind', 'with', 'with', 'with', 'within', 'within', 'within',
-'wow', 'wow', 'y', 'y', 'yay', 'yak', 'yeah', 'yellow', 'yesterday', 'yo-yo', 'you', 'you', 'yourself', 'yourself', 'zucchini'
+'wow', 'wow', 'y', 'y', 'yay', 'yak', 'yeah', 'yellow', 'yesterday', 'yo-yo', 'you', 'you', 'yourself', 'yourself', 'zucchini', 'bella', 'le'
 ].map((text, id) => ({
   id,
   text,
