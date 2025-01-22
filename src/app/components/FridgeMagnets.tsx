@@ -177,8 +177,10 @@ const FridgeMagnets = () => {
   };
 
   const handleTouchStart = (e: React.TouchEvent, wordId?: number) => {
+    e.preventDefault(); // Prevent default touch behavior
+    e.stopPropagation();
+
     if (e.touches.length === 2) {
-      e.preventDefault();
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
       const dist = Math.hypot(
@@ -194,15 +196,63 @@ const FridgeMagnets = () => {
       return;
     }
 
-    if (wordId === undefined) return;
-
-    e.preventDefault();
-    const touch = e.touches[0];
-    calculateRelativePosition(touch.clientX, touch.clientY);
-    const word = words.find(w => w.id === wordId);
-    if (word) {
-      startDrag(touch.clientX, touch.clientY, wordId, word.x, word.y, true);
+    if (wordId !== undefined) {
+      const touch = e.touches[0];
+      const word = words.find(w => w.id === wordId);
+      if (word) {
+        startDrag(touch.clientX, touch.clientY, wordId, word.x, word.y, true);
+      }
+    } else {
+      const touch = e.touches[0];
+      startPanning(touch.clientX, touch.clientY);
     }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (e.touches.length === 2) {
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const dist = Math.hypot(
+        touch1.clientX - touch2.clientX,
+        touch1.clientY - touch2.clientY
+      );
+      
+      const delta = (dragInfo.current.startX - dist) * -1;
+      handleZoom(delta);
+      dragInfo.current.startX = dist;
+      
+      const midX = (touch1.clientX + touch2.clientX) / 2;
+      const midY = (touch1.clientY + touch2.clientY) / 2;
+      updatePanPosition(midX, midY);
+      return;
+    }
+
+    const touch = e.touches[0];
+    const rect = boardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    // Get the touch position relative to the board
+    const touchX = touch.clientX - rect.left;
+    const touchY = touch.clientY - rect.top;
+    
+    if (dragging && dragInfo.current.isTouchEvent) {
+      updateDragPosition(touchX, touchY);
+    } else if (!dragging) {
+      updatePanPosition(touch.clientX, touch.clientY);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (dragInfo.current.isTouchEvent) {
+      stopDrag();
+    }
+    stopPanning();
+    dragInfo.current.isTouchEvent = false;
   };
 
   const handleMouseUp = () => {
@@ -242,6 +292,8 @@ const FridgeMagnets = () => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onTouchStart={(e) => handleTouchStart(e)}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         onWheel={handleWheel}
       >
         <Canvas

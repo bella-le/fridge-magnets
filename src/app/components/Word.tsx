@@ -43,10 +43,12 @@ export const Word: React.FC<WordProps> = ({
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     const now = Date.now();
     if (now - lastTouchTime.current < 300) {
       // Double tap detected
-      e.stopPropagation();
       onDeleteClick?.(id);
     } else {
       // Single tap - handle normal touch
@@ -64,6 +66,9 @@ export const Word: React.FC<WordProps> = ({
         transform: `rotate(${rotation}deg)`,
         padding: '12px', // Invisible padding around the word
         userSelect: 'none',
+        touchAction: 'none', // Prevent browser touch actions
+        WebkitTouchCallout: 'none', // Prevent iOS callout
+        WebkitUserSelect: 'none', // Prevent text selection
         zIndex: isDragging ? 1000 : 1,
         cursor: 'grab'
       }}

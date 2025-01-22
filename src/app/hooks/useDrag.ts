@@ -44,15 +44,20 @@ export const useDrag = (
     const rect = boardRef.current?.getBoundingClientRect();
     if (!rect) return;
 
-    const x = (clientX - rect.left) / scale - position.x;
-    const y = (clientY - rect.top) / scale - position.y;
+    // Calculate the position in canvas coordinates
+    const x = (clientX - rect.left) / scale;
+    const y = (clientY - rect.top) / scale;
+
+    // Calculate the offset relative to the word position
+    const offsetX = (x - position.x) - wordX;
+    const offsetY = (y - position.y) - wordY;
 
     dragInfo.current = {
       wordId,
       startX: x,
       startY: y,
-      offsetX: x - wordX,
-      offsetY: y - wordY,
+      offsetX,
+      offsetY,
       isTouchEvent
     };
     setDragging(true);
@@ -61,10 +66,15 @@ export const useDrag = (
   const updateDragPosition = (x: number, y: number) => {
     if (!dragging || dragInfo.current.wordId === null) return;
 
+    // Convert the position to canvas coordinates
+    const canvasX = x / scale - position.x;
+    const canvasY = y / scale - position.y;
+
+    // Calculate new position with boundaries
     const newX = Math.max(wordPadding, 
-      Math.min(canvasWidth - wordPadding, x - dragInfo.current.offsetX));
+      Math.min(canvasWidth - wordPadding, canvasX - dragInfo.current.offsetX));
     const newY = Math.max(wordPadding, 
-      Math.min(canvasHeight - wordPadding, y - dragInfo.current.offsetY));
+      Math.min(canvasHeight - wordPadding, canvasY - dragInfo.current.offsetY));
 
     onWordMove(dragInfo.current.wordId, newX, newY);
   };

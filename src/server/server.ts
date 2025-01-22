@@ -26,7 +26,7 @@ const initialWords = [
 'lie', 'life', 'light', 'like', 'like', 'listen', 'listen', 'love', 'love', 'lovely', 'lovely', 'ly', 'ly', 'magic', 'me',
 'me', 'meh', 'meh', 'midnight', 'moon', 'morning', 'my', 'myself', 'myself', 'near', 'near', 'near', 'never', 'night', 'night',
 'Nietzsche', 'now', 'ocean', 'Oedipus', 'oh', 'oh', 'only', 'or', 'or', 'out', 'out', 'out', 'over', 'over', 'over',
-'peace', 'pigeon', 'pink', 'platypus', 'poo', 'poop', 'purple', 'robot', 's', 's', 's', 's', 's', 's', 's',
+'party', 'party', 'peace', 'people', 'pigeon', 'pink', 'platypus', 'poo', 'poop', 'purple', 'robot', 's', 's', 's', 's', 's', 's', 's',
 's', 'sad', 'said', 'said', 'say', 'say', 'see', 'see', 'shadow', 'she', 'she', 'shiny', 'shit', 'shore',
 'sit', 'sky', 'sleepy', 'sloth', 'so', 'so', 'so', 'soft', 'sparkle', 'sparkly', 'spaghetti', 'star', 'starry', 'strong', 'sun',
 'sweet', 'tea', 'that', 'that', 'the', 'the', 'the', 'the', 'the', 'them', 'them', 'they', 'they', 'think', 'think',
